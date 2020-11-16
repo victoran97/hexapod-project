@@ -1,0 +1,11 @@
+<launch>
+<!--Your comment-->
+<arg name="model" default="xacro --inorder $(find hexapod_description)/models/hexapod_model.xacro"/>
+<arg name="gui" default="True"/>
+<param name="robot_description" command="$(arg model)"/>
+<param name="use_gui" value="$(arg gui)"/>
+<node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher"/>
+<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+<node name="rviz" pkg="rviz" type="rviz"    args="-d $(find hexapod_description)/launch/display_hexapod.rviz" />
+
+</launch>

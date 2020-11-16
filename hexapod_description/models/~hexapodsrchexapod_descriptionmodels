@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="hexapod">
+
+    <!-- Robot Frame -->
+
+        <link name="base_link"/>
+
+        <joint name="base_joint" type="fixed">
+            <parent link="base_link"/>
+            <child link="body"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+
+        <link name="body">
+            
+            <inertial>
+                <mass value="0.8"/>
+                <inertia ixx="0.007"  ixy="0"  ixz="0" iyy="0.012" iyz="0" izz="0.010" />
+            </inertial>
+            
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                        <mesh filename="package://hexapod_description/meshes/BODY.stl"/>
+                </geometry>
+                <material name="grey">
+                        <color rgba="0.5 0.5 0.5 1"/>
+                </material>
+            </visual>
+            
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://hexapod_description/meshes/BODY_SIMPLIFIED.stl"/>
+                </geometry>
+            </collision>
+        
+        </link>
+
+    <!-- Pi (used for angle calculations)-->
+    <xacro:property name="pi" value="3.1415926535897931"/>
+
+    <!-- Propriedade das Juntas [Joint Properties]-->
+    <xacro:property name="joint_lower_limit" value="-${1.5}"/>
+    <xacro:property name="joint_upper_limit" value="${1.5}"/>
+    <xacro:property name="joint_effort" value="10000"/>
+    <xacro:property name="joint_velocity" value="100"/>
+
+    <!--Macro for legs-->
+    <xacro:macro name="leg" params="side num x y angle inv">
+
+    <!-- Construindo a perna [Building a leg]-->
+    <joint name="leg_center_joint_${side}${num}" type="fixed">
+        <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+        <parent link="body"/>
+        <child link="leg_center_${side}${num}"/>
+    </joint>
+
+    <link name="leg_center_${side}${num}"/>
+
+    <joint name="coxa_joint_${side}${num}" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 ${angle}"/>
+        <parent link="leg_center_${side}${num}"/>
+        <child link="coxa_${side}${num}"/>
+        <axis xyz="0 0 -1"/>
+        <limit lower="${joint_lower_limit}" upper="${joint_upper_limit}" effort="${joint_effort}" velocity="${joint_velocity}"/>
+    </joint>
+
+        <link name="coxa_${side}${num}">
+
+            <inertial>
+                <mass value="0.5"/>
+                <inertia ixx="0.001"  ixy="0"  ixz="0" iyy="0" iyz="0" izz="0.001" />
+            </inertial>
+            
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://hexapod_description/meshes/COXA_${side}.stl"/>
+                </geometry>
+                <material name="">
+                    <color rgba="0.7 0.7 0 1"/>
+                    </material>
+            </visual>
+
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://hexapod_description/meshes/COXA_${side}_SIMPLIFIED.stl"/>
+                </geometry>
+            </collision>
+        
+        </link>
+
+        <joint name="femur_joint_${side}${num}" type="revolute">
+    		<origin xyz="-0.022 ${inv*0.028} 0.0274" rpy="${inv*0.9} 0 0" />
+    		<parent link="coxa_${side}${num}" />
+    		<child link="femur_${side}${num}" />
+    		<axis xyz="-1 0 0" />
+    		<limit lower="-0.52" upper="0.61" effort="${joint_effort}" velocity="${joint_velocity}" />
+  	    </joint>
+
+        <link name="femur_${side}${num}">
+
+            <inertial>
+                <mass value="0.05"/>
+                <inertia ixx="0"  ixy="0"  ixz="0" iyy="0" iyz="0" izz="0" />
+            </inertial>
+    		
+            <visual>
+      			<origin xyz="0 0 0" rpy="0 0 0" />
+      			<geometry>
+        			<mesh filename="package://hexapod_description/meshes/FEMUR_${side}.stl" />
+      			</geometry>
+      			<material name="">
+        			<color rgba="0 0.7 0.7 1" />
+      			</material>
+    		</visual>
+
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://hexapod_description/meshes/FEMUR_${side}_SIMPLIFIED.stl"/>
+                </geometry>
+            </collision>
+  	    
+        </link>
+
+        <joint name="tibia_joint_${side}${num}" type="revolute">
+    		<origin xyz="0.003 ${inv*0.0765} -0.0055" rpy="${-inv*1.3} 0 0" />
+    		<parent link="femur_${side}${num}" />
+    		<child link="tibia_${side}${num}" />
+    		<axis xyz="1 0 0" />
+    		<limit lower="-0.87" upper="1.22" effort="${joint_effort}" velocity="${joint_velocity}" />
+  	    </joint>
+
+        <link name="tibia_${side}${num}">
+
+            <inertial>
+                <mass value="0.2"/>
+                <inertia ixx="0"  ixy="0"  ixz="0" iyy="0" iyz="0" izz="0" />
+            </inertial>
+    		
+            <visual>
+      			<origin xyz="0 0 0" rpy="0 0 0" />
+      			<geometry>
+       				<mesh filename="package://hexapod_description/meshes/TIBIA_${side}.stl" />
+      			</geometry>
+      			<material name="">
+        			<color rgba="0.7 0 0.7 1" />
+      			</material>
+    		</visual>
+
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://hexapod_description/meshes/TIBIA_${side}_SIMPLIFIED.stl"/>
+                </geometry>
+            </collision>
+  	    
+        </link>
+
+        <joint name="tibia_foot_joint_${side}${num}" type="fixed">
+    		<origin xyz="0 0.100 -0.094" rpy="0 0 0" />
+    		<parent link="tibia_${side}${num}" />
+    		<child link="tibia_foot_${side}${num}" />
+  	    </joint>
+
+  	    <link name="tibia_foot_${side}${num}" />
+	    
+        </xacro:macro>
+
+        <xacro:leg side="R" num="1" x="0.0875" 	    y="0.050175" 	angle="${pi*3/4}"     inv="-1"/>
+	    <xacro:leg side="R" num="2" x="0" 		    y="0.070" 	    angle="${pi}"         inv="-1"/>
+	    <xacro:leg side="R" num="3" x="-0.0875"   	y="0.050175" 	angle="${pi*5/4}"     inv="-1"/>
+	    <xacro:leg side="L" num="1" x="0.0875" 	    y="-0.050175"	angle="-${pi*3/4}"    inv="1"/>
+	    <xacro:leg side="L" num="2" x="0" 		    y="-0.070"	    angle="-${pi}"        inv="1"/>
+	    <xacro:leg side="L" num="3" x="-0.0875" 	y="-0.050175"   angle="-${pi*5/4}"    inv="1"/>
+
+</robot>

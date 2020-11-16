@@ -1,0 +1,7 @@
+<xacro:leg side="R" num="1" x="0.0875" 	    y="0.070" 	angle="-${pi/3}" />
+	    <xacro:leg side="R" num="2" x="0" 		    y="0.070" 	angle="-${pi/2}" />
+	    <xacro:leg side="R" num="3" x="-0.0875"   	y="0.070" 	angle="-${pi*2/3}" />
+	    <xacro:leg side="L" num="1" x="0.0875" 	    y="-0.070"	angle="${pi/3}" />
+	    <xacro:leg side="L" num="2" x="0" 		    y="-0.070"	angle="${pi/2}" />
+	    <xacro:leg side="L" num="3" x="-0.0875" 	y="-0.070"  angle="${pi*2/3}" />
+

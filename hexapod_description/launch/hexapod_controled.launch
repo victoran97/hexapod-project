@@ -1,0 +1,12 @@
+<launch>
+
+<!--Your comment-->
+
+<arg name="model" default="xacro --inorder $(find hexapod_description)/models/hexapod_model.xacro"/>
+<arg name="gui" default="True"/>
+<param name="robot_description" command="$(arg model)"/>
+<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+<node pkg="kinematics" name="control" type="control.py" output="screen"/>
+<node name="rviz" pkg="rviz" type="rviz"    args="-d $(find hexapod_description)/launch/display_hexapod.rviz" />
+
+</launch>
