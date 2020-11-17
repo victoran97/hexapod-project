@@ -12,8 +12,6 @@ Panels:
         - /Axes1
         - /TF1
         - /TF1/Frames1
-        - /TF1/Frames1/tibia_foot_L11
-        - /TF1/Frames1/tibia_foot_L11/Position1
       Splitter Ratio: 0.5
     Tree Height: 428
   - Class: rviz/Selection
@@ -388,10 +386,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5303994417190552
+      Pitch: 0.09539967030286789
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.06358003616333
+      Yaw: 0.14539386332035065
     Saved: ~
 Window Geometry:
   Displays:
